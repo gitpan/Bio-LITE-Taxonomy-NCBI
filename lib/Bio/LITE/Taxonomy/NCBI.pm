@@ -65,6 +65,8 @@ You can query the tree using C<GI>s directly instead of C<Taxid>s. For doing thi
 
 Use this option to avoid to load the binary dictionary (GI to Taxid) into memory. This will save almost 1GB of system memory but looking up for Taxids will be ~20% slower. This parameter is optional, only makes sense if you are using the C<GI> to C<Taxid> dictionary and is I<off> by default.
 
+=back
+
 =head1 METHODS
 
 This module inherits from L<Bio::LITE::Taxonomy> so all the methods explained there are accessible.
@@ -76,11 +78,27 @@ These methods are also available:
 
 Accepts a C<GI> as input and returns an array with its ascendants ordered from top to bottom.
 
-  my @tax = $tax->get_taxonomy($taxid);
+  my @tax = $tax->get_taxonomy_from_gi($gi);
   print "$_\n" for (@tax);
 
 If called in scalar context, returns an array reference instead of the array.
+See L<Bio::LITE::Taxonomy>::get_taxonomy
 
+=item get_taxonomy_with_levels_from_gi
+
+The same as get_taxonomy_from_gi but instead of getting the ascendants returns an array of array references. Each array reference has the ascendant and its taxonomic level (at positions 0 and 1 respectively). This is simpler than it sounds. Check L<Bio::LITE::Taxonomy>::get_taxonomy_with_levels for more information.
+
+If called in scalar context, returns an array reference instead of the array.
+
+=item get_term_at_level_from_gi
+
+Given a gi and a taxonomic level as input, returns the taxon. For example,
+
+  my $taxon = $tax->get_term_at_level_from_gi($gi,"family");
+
+See L<Bio::LITE::Taxonomy>::get_term_at_level.
+
+=back
 
 =head1 SEE ALSO
 
@@ -119,7 +137,7 @@ use Bio::LITE::Taxonomy;
 #}
 use base qw(Bio::LITE::Taxonomy);
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 use constant FS => '\t\|\t';
 use constant RS => '\t\|\n';
