@@ -8,3 +8,7 @@ Revision history for Bio-LITE-Taxonomy-NCBI
 
 0.03	Wed Nov 24 13:59:56 2010
 	Fixed Gi2taxid inheritance
+
+0.04	Mon Nov 29 12:41:12 2010
+	Fixed more small bugs with Gi2taxid
+

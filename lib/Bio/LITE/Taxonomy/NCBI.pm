@@ -137,7 +137,7 @@ use Bio::LITE::Taxonomy;
 #}
 use base qw(Bio::LITE::Taxonomy);
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 use constant FS => '\t\|\t';
 use constant RS => '\t\|\n';
@@ -156,7 +156,7 @@ sub new
     $self->_build_taxonomy();
     if (defined $args{dict}) {
       require Bio::LITE::Taxonomy::NCBI::Gi2taxid;
-      $self->{dict} = Taxonomy::NCBI::Gi2taxid->new(dict=>$args{dict},save_mem=>$args{save_mem} || 0);
+      $self->{dict} = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>$args{dict},save_mem=>$args{save_mem} || 0);
     }
     return $self;
   }
