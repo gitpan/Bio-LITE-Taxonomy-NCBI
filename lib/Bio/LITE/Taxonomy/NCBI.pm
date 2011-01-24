@@ -137,7 +137,7 @@ use Bio::LITE::Taxonomy;
 #}
 use base qw(Bio::LITE::Taxonomy);
 
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 
 use constant FS => '\t\|\t';
 use constant RS => '\t\|\n';
@@ -240,10 +240,11 @@ sub get_taxonomy_from_gi
 
       sub get_term_at_level_from_gi
         {
-          my ($self,$gi) = @_;
+          my ($self,$gi,$level) = @_;
           croak "Undefined GI\n" unless (defined $gi);
+	  croak "Undefined Level\n" unless (defined $level);
           my $taxid = $self->{dict}->get_taxid($gi);
-          return $self->get_term_at_level($taxid);
+          return $self->get_term_at_level($taxid,$level);
         }
 
 # Note: Use methods in Gi2taxid as if they were from here

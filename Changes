@@ -12,3 +12,5 @@ Revision history for Bio-LITE-Taxonomy-NCBI
 0.04	Mon Nov 29 12:41:12 2010
 	Fixed more small bugs with Gi2taxid
 
+0.05    Sat Jan 22 15:35:14 2011
+	Fixed a bug in get_ter_at_level_from_gi method
