@@ -14,3 +14,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI
 
 0.05    Sat Jan 22 15:35:14 2011
 	Fixed a bug in get_ter_at_level_from_gi method
+
+0.06    Mon Jan 31 09:15:34 2011
+	Fixed a bug in Makefile.PL (Test::More version > 0.87 is needed)
