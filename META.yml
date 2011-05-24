@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Bio-LITE-Taxonomy-NCBI
-version:            0.06
+version:            0.07
 abstract:           Lightweight and efficient NCBI taxonomic manager
 author:
     - Miguel Pignatelli <emepyc@gmail.com>
@@ -11,7 +11,7 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    Bio::LITE::Taxonomy:  0
+    Bio::LITE::Taxonomy:  0.07
     Test::More:           0.87
 no_index:
     directory:

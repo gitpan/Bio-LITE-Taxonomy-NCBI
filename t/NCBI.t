@@ -28,8 +28,8 @@ SKIP: {
     @tax = $taxNCBI->get_taxonomy(1442);
   };
   is($@,"",""); # T10
-  ok($#tax == 8, "");                   # T11
-  is($tax[0],"Bacteria", "");       # T12
+  ok($#tax == 9, "");                   # T11
+  is($tax[0],"cellular organisms", "");       # T12
 
   eval {
     $tax = $taxNCBI->get_taxonomy(1442);
@@ -69,7 +69,7 @@ SKIP: {
       $tax = $taxNCBI->get_taxonomy_from_gi(2);
     };
     is($@,"","");
-    is($tax->[0],"Bacteria");
+    is($tax->[0],"cellular organisms");
 
     my $taxid;
     eval {
