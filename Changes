@@ -20,3 +20,6 @@ Revision history for Bio-LITE-Taxonomy-NCBI
 
 0.07	Tue May 24 12:07:12 2011
 	Small change in the tests to pass changes in Bio::LITE::Taxonomy v0.07
+
+0.08    Mon Aug 27 15:37:17 2012
+	Change in the Bio::LITE::Taxonomy::NCBI::Gi2taxid test

@@ -137,7 +137,7 @@ use Bio::LITE::Taxonomy;
 #}
 use base qw(Bio::LITE::Taxonomy);
 
-our $VERSION = 0.07;
+our $VERSION = 0.08;
 
 use constant FS => '\t\|\t';
 use constant RS => '\t\|\n';
