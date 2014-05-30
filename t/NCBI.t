@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 22;
 
 BEGIN {
   use_ok ('Bio::LITE::Taxonomy'); # T1
@@ -43,15 +43,29 @@ SKIP: {
   is($@,"",""); # T10
   is($level,"family",""); # T11
 
+  ## Retrieves taxon ids from synomyms
+  my $taxon_id;
+  eval {
+    $taxon_id = $taxNCBI->get_taxid_from_name("Myxobacteria");
+  };
+  is($@,"","");
+  is($taxon_id, 29);
+
+  eval {
+    $level = $taxNCBI->get_level_from_name("Alteromonas hanedai"); # Synonym
+  };
+  is($@, "", ""); #T12
+  is($level, "species"); #T13
+
   eval {
     $tax = $taxNCBI->get_taxonomy(3);
   };
-  is($tax,"",""); # T12
+  is($tax,"",""); # T14
 
   eval {
     $tax = $taxNCBI->get_taxonomy();
   };
-  ok (!defined $tax, ""); # T13
+  ok (!defined $tax, ""); # T15
 
  SKIP: {
     my $n = 5;
@@ -60,7 +74,6 @@ SKIP: {
     my $dict_path = "t/data/dict.bin";
     skip "dict sample file not found", $n unless (-e $dict_path);
     skip "dict sample not readable", $n unless (-e $dict_path);
-#    skip "dict sample not in binary format", $n unless (-b $dict_path);
 
     my $taxNCBI = new_ok ( "Bio::LITE::Taxonomy::NCBI" => [(nodes=>"${datapath}/nodes.dmp",names=>"${datapath}/names.dmp",dict=>$dict_path)] );
 
@@ -76,8 +89,8 @@ SKIP: {
       $taxid = $taxNCBI->get_taxid(3);
     };
     die $@ if $@;
-    ok (defined $taxid, ""); # T14
-    ok ($taxid == 3,""); # T15
+    ok (defined $taxid, ""); # T16
+    ok ($taxid == 3,""); # T17
 
   }
 }

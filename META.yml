@@ -1,23 +1,23 @@
---- #YAML:1.0
-name:               Bio-LITE-Taxonomy-NCBI
-version:            0.08
-abstract:           Lightweight and efficient NCBI taxonomic manager
+---
+abstract: 'Lightweight and efficient NCBI taxonomic manager'
 author:
-    - Miguel Pignatelli <emepyc@gmail.com>
-license:            perl
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
+  - 'Miguel Pignatelli <emepyc@gmail.com>'
 build_requires:
-    ExtUtils::MakeMaker:  0
-requires:
-    Bio::LITE::Taxonomy:  0.07
-    Test::More:           0.87
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.56
+  ExtUtils::MakeMaker: 0
+configure_requires:
+  ExtUtils::MakeMaker: 0
+dynamic_config: 1
+generated_by: 'ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.131560'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Bio-LITE-Taxonomy-NCBI
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Bio::LITE::Taxonomy: 0.07
+  Test::More: 0.87
+version: 0.09

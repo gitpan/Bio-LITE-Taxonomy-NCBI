@@ -1,4 +1,3 @@
-
 package Bio::LITE::Taxonomy::NCBI;
 
 =head1 NAME
@@ -129,7 +128,7 @@ use strict;
 use warnings;
 use Carp qw/croak/;
 
-use Bio::LITE::Taxonomy;
+#use Bio::LITE::Taxonomy;
 #if (do {(sprintf "%vd",$^V) =~ /5\.(\d\d)/; $1}  >= 10}) {
 #    import base qw(Taxonomy);
 #} else {
@@ -137,126 +136,118 @@ use Bio::LITE::Taxonomy;
 #}
 use base qw(Bio::LITE::Taxonomy);
 
-our $VERSION = 0.08;
+our $VERSION = 0.09;
 
 use constant FS => '\t\|\t';
 use constant RS => '\t\|\n';
 
-sub new
-  {
-    my ($class,%args) = @_;
-    my %opts;
+sub new {
+  my ($class,%args) = @_;
+  my %opts;
 
-    defined $args{'nodes'} or croak "Need the file nodes.dmp";
-    defined $args{'names'} or croak "Need the file names.dmp";
+  defined $args{'nodes'} or croak "Need the file nodes.dmp";
+  defined $args{'names'} or croak "Need the file names.dmp";
 
-    @opts{qw/nodesFile namesFile/} = @args{qw/nodes names/};
+  @opts{qw/nodesFile namesFile/} = @args{qw/nodes names/};
 
-    my $self = bless \%opts, $class;
-    $self->_build_taxonomy();
-    if (defined $args{dict}) {
-      require Bio::LITE::Taxonomy::NCBI::Gi2taxid;
-      $self->{dict} = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>$args{dict},save_mem=>$args{save_mem} || 0);
-    }
-    return $self;
+  my $self = bless \%opts, $class;
+  $self->_build_taxonomy();
+  if (defined $args{dict}) {
+    require Bio::LITE::Taxonomy::NCBI::Gi2taxid;
+    $self->{dict} = Bio::LITE::Taxonomy::NCBI::Gi2taxid->new(dict=>$args{dict},save_mem=>$args{save_mem} || 0);
   }
+  return $self;
+}
 
-sub _build_taxonomy
-  {
-    my ($self) = @_;
-    my $nodesFile = $self->{nodesFile};
-    my $tax;
-    if ((UNIVERSAL::isa($nodesFile, 'GLOB')) or (ref \$nodesFile eq 'GLOB')) {
-      $tax = $nodesFile;
-    } else {
-      open $tax, "<", $nodesFile or croak "$!";
-    }
-    while (<$tax>){
-      chomp;
-      $self -> _create_node(_parse_tax_rec($_));
-    }
-    $self -> _name_nodes();
-    close $tax unless ((UNIVERSAL::isa($nodesFile, 'GLOB')) or (ref \$nodesFile eq 'GLOB'));
+sub _build_taxonomy {
+  my ($self) = @_;
+  my $nodesFile = $self->{nodesFile};
+  my $tax;
+  if ((UNIVERSAL::isa($nodesFile, 'GLOB')) or (ref \$nodesFile eq 'GLOB')) {
+    $tax = $nodesFile;
+  } else {
+    open $tax, "<", $nodesFile or croak "$!";
   }
+  while (<$tax>){
+    chomp;
+    $self -> _create_node(_parse_tax_rec($_));
+  }
+  $self -> _name_nodes();
+  close $tax unless ((UNIVERSAL::isa($nodesFile, 'GLOB')) or (ref \$nodesFile eq 'GLOB'));
+}
 
-sub _create_node
-    {
-      my ($self,$node,$parent,$level) = @_;
-      $self->{allowed_levels}{$level} = 1 if (! defined $self->{allowed_levels}{$level});
-      @{$self->{nodes}->{$node}}{qw/parent level/} = ($parent,$level);
-    }
+sub _create_node {
+  my ($self,$node,$parent,$level) = @_;
+  $self->{allowed_levels}{$level} = 1 if (! defined $self->{allowed_levels}{$level});
+  @{$self->{nodes}->{$node}}{qw/parent level/} = ($parent,$level);
+}
 
-sub _name_nodes
-    {
-      my ($self) = @_;
-      my $namesFile = $self->{namesFile};
-      my $nodesNames;
-      if ((UNIVERSAL::isa($namesFile, 'GLOB')) or (ref \$namesFile eq 'GLOB')) {
+sub _name_nodes {
+  my ($self) = @_;
+  my $namesFile = $self->{namesFile};
+  my $nodesNames;
+  if ((UNIVERSAL::isa($namesFile, 'GLOB')) or (ref \$namesFile eq 'GLOB')) {
     $nodesNames = $namesFile;
-      } else {
+  } else {
     open $nodesNames, "<", $namesFile or croak $!;
-      }
-      while (<$nodesNames>){
+  }
+  while (<$nodesNames>){
     chomp;
     my ($taxId,$taxName,$comment) = _process_tax_name ($_);
     if ($comment eq "scientific name"){
       ${$self->{nodes}->{$taxId}}{name} = $taxName;
-          $self->{names}->{$taxName} = $taxId;
+      $self->{names}->{$taxName} = $taxId;
+    } elsif ($comment eq "synonym") {
+      $self->{names}->{$taxName} = $taxId;
     }
-      }
-      close $nodesNames;
-    }
+  }
+  close $nodesNames;
+}
 
-sub _parse_tax_rec
-{
-    my $line = shift @_;
-    return (split FS,$line)[0,1,2];
+sub _parse_tax_rec {
+  my $line = shift @_;
+  return (split FS,$line)[0,1,2];
 }
 
 
-sub _process_tax_name
-  {
-    my $line = shift @_;
-    my @fields = split FS, $line;
-    $fields[3] =~ s/\t\|$//;
-    return ($fields[0],$fields[1],$fields[3]);
-  }
+sub _process_tax_name {
+  my $line = shift @_;
+  my @fields = split FS, $line;
+  $fields[3] =~ s/\t\|$//;
+  return ($fields[0],$fields[1],$fields[3]);
+}
 
-sub get_taxonomy_from_gi
-    {
-      my ($self,$gi) = @_;
-      croak "Undefined GI\n" unless (defined $gi);
-      my $taxid = $self->{dict}->get_taxid($gi);
-      return $self->get_taxonomy($taxid);
-    }
+sub get_taxonomy_from_gi {
+  my ($self,$gi) = @_;
+  croak "Undefined GI\n" unless (defined $gi);
+  my $taxid = $self->{dict}->get_taxid($gi);
+  return $self->get_taxonomy($taxid);
+}
 
-    sub get_taxonomy_with_levels_from_gi
-      {
-        my ($self,$gi) = @_;
-        croak "Undefined GI\n" unless (defined $gi);
-        my $taxid = $self->{dict}->get_taxid($gi);
-        return $self->get_taxonomy_with_levels($taxid);
-      }
+sub get_taxonomy_with_levels_from_gi {
+  my ($self,$gi) = @_;
+  croak "Undefined GI\n" unless (defined $gi);
+  my $taxid = $self->{dict}->get_taxid($gi);
+  return $self->get_taxonomy_with_levels($taxid);
+}
 
-      sub get_term_at_level_from_gi
-        {
-          my ($self,$gi,$level) = @_;
-          croak "Undefined GI\n" unless (defined $gi);
-	  croak "Undefined Level\n" unless (defined $level);
-          my $taxid = $self->{dict}->get_taxid($gi);
-          return $self->get_term_at_level($taxid,$level);
-        }
+sub get_term_at_level_from_gi {
+  my ($self,$gi,$level) = @_;
+  croak "Undefined GI\n" unless (defined $gi);
+  croak "Undefined Level\n" unless (defined $level);
+  my $taxid = $self->{dict}->get_taxid($gi);
+  return $self->get_term_at_level($taxid,$level);
+}
 
 # Note: Use methods in Gi2taxid as if they were from here
-sub AUTOLOAD
-   {
-     my ($self,$args) = @_;
-     our $AUTOLOAD;
-     my $method = $AUTOLOAD;
-     $method =~ s/.*:://;
-     $self->{dict}->can($method) or croak "$method not defined in package __PACKAGE__\n";
-     return $self->{dict}->$method($args);
-   }
+sub AUTOLOAD {
+  my ($self,$args) = @_;
+  our $AUTOLOAD;
+  my $method = $AUTOLOAD;
+  $method =~ s/.*:://;
+  $self->{dict}->can($method) or croak "$method not defined in package __PACKAGE__\n";
+  return $self->{dict}->$method($args);
+}
 
 # Needed to dont call AUTLOAD on object destruction
 sub DESTROY     { }
